@@ -8,12 +8,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:to_do_app/data/dataSources/local/models/task.dart';
-import 'package:to_do_app/data/dataSources/local/models/task_list.dart';
 
 part 'database.g.dart';
 
 @lazySingleton
-@DriftDatabase(tables: [Tasks, TaskLists])
+@DriftDatabase(tables: [Tasks])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -26,8 +25,8 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    final dbFolder = await getApplicationSupportDirectory();
+    final file = File(p.join(dbFolder.path, 'db1.sqlite'));
 
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {
@@ -44,3 +43,5 @@ LazyDatabase _openConnection() {
     return NativeDatabase.createInBackground(file);
   });
 }
+
+

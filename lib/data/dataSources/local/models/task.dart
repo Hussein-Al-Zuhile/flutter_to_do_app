@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:to_do_app/data/dataSources/local/models/task_list.dart';
 
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -8,5 +7,5 @@ class Tasks extends Table {
 
   BoolColumn get isDone => boolean().withDefault(const Constant(false))();
 
-  IntColumn get taskList => integer().references(TaskLists, #id, onDelete: KeyAction.cascade)();
+  // IntColumn get taskList => integer().references(TaskLists, #id, onDelete: KeyAction.cascade)();
 }
