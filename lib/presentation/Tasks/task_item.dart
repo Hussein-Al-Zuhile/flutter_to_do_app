@@ -11,21 +11,24 @@ class TaskItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Checkbox(value: task.isDone, onChanged: (bool? value) {
-          context.read<TasksCubit>().updateTask(
-              Task(id: task.id, content: task.content, isDone: !task.isDone));
-        }),
+        Checkbox(
+            value: task.isDone,
+            onChanged: (bool? value) {
+              context.read<TasksCubit>().updateTask(Task(
+                  id: task.id, content: task.content, isDone: !task.isDone));
+            }),
         const SizedBox(
           width: 16,
         ),
         Text(task.content),
-        const SizedBox(
-          width: 16,
-        ),
-        IconButton(onPressed: () {
-          context.read<TasksCubit>().deleteTask(task);
-        }, icon: const Icon(Icons.delete))
+        const Spacer(),
+        IconButton(
+            onPressed: () {
+              context.read<TasksCubit>().deleteTask(task);
+            },
+            icon: const Icon(Icons.delete))
       ],
     );
   }
