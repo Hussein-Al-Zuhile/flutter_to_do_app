@@ -10,22 +10,26 @@ part 'tasks_state.dart';
 
 @injectable
 class TasksCubit extends Cubit<TasksState> {
-  final TasksRepository tasksRepository;
+  final TasksRepository _tasksRepository;
 
-  TasksCubit(this.tasksRepository) : super(TasksInitial()) {
-    tasksRepository.getAllTasks().listen((tasks) {
+  TasksCubit(this._tasksRepository) : super(TasksInitial()) {
+    emit(TasksLoading());
+    _tasksRepository.getAllTasks().listen((tasks) {
       emit(TasksFetched(tasks: tasks.map((task) => task.toDomainTask()).toList()));
     });
   }
 
   void addTask(TaskEntity taskEntity) async {
-    await tasksRepository.addTask(taskEntity);
+    await _tasksRepository.addTask(taskEntity);
   }
 
   void updateTask(Task task) async {
-    await tasksRepository.updateTask(task);
+    await _tasksRepository.updateTask(task);
   }
 
+  void deleteTask(Task task) async {
+    await _tasksRepository.deleteTask(task);
+  }
 }
 
 extension on dataTask.Task {

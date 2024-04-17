@@ -16,8 +16,9 @@ class TasksRepository {
   }
 
   Future<void> updateTask(domainTask.Task task) async {
-    await localDataSource.updateTask(TasksCompanion.insert(
-        id: Value(task.id), content: task.content, isDone: Value(task.isDone)));
+    print(task.id);
+    await localDataSource.updateTask(TasksCompanion(
+        id: Value(task.id), content: Value(task.content), isDone: Value(task.isDone)));
   }
 
   Future<void> deleteTask(domainTask.Task task) async {

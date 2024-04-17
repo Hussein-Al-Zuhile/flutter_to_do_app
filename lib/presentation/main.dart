@@ -68,7 +68,7 @@ class Home extends StatelessWidget {
             ],
           );
         } else {
-          return Placeholder();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

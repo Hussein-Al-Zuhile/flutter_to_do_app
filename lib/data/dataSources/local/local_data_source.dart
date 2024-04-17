@@ -1,4 +1,3 @@
-
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:to_do_app/data/dataSources/local/database.dart';
@@ -12,12 +11,13 @@ class LocalDataSource {
 
   Future<void> addTask(TaskEntity taskEntity) async {
     await _database.tasks.insertOne(
-        TasksCompanion.insert(content: taskEntity.content, isDone: Value(taskEntity.isDone)));
+      TasksCompanion.insert(content: taskEntity.content, isDone: Value(taskEntity.isDone)),);
   }
 
   Future<void> updateTask(TasksCompanion task) async {
-    await _database.tasks.update().write(task);
-  }
+    await (_database.tasks.update()
+      ..whereSamePrimaryKey(task)).write(task);
+    }
 
   Future<void> deleteTask(TasksCompanion task) async {
     await _database.tasks.deleteOne(task);
