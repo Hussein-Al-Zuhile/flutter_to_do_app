@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_do_app/domain/entities/task_entity.dart';
 import 'package:to_do_app/presentation/Tasks/task_item.dart';
 
 import '../../data/repositories/tasks/tasks_repository.dart';
 import '../../di/injection_container.dart';
-import '../../domain/entities/task_entity.dart';
 import '../../domain/use-cases/tasks_cubit.dart';
 
 class TaskListScreen extends StatelessWidget {
@@ -26,7 +26,9 @@ class TaskListScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   onSubmitted: (text) {
-                    context.read<TasksCubit>().addTask(TaskEntity(content: text, isDone: false));
+                    context
+                        .read<TasksCubit>()
+                        .addTask(TaskEntity(content: text, isDone: false, taskListId: 0));
                     textController.clear();
                   },
                   controller: textController,
@@ -37,9 +39,9 @@ class TaskListScreen extends StatelessWidget {
                 child: ListView.builder(
                     itemCount: state.tasks.length,
                     itemBuilder: (buildContext, int index) {
-                      return TaskItem(
-                        task: state.tasks[index],
-                      );
+                      // return TaskItem(
+                      //   task: state.tasks[index],
+                      // );
                     }),
               ),
             ],

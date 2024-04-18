@@ -8,7 +8,7 @@ final class TasksInitial extends TasksState {}
 final class TasksLoading extends TasksState {}
 
 final class TasksFetched extends TasksState {
-  final List<Task> tasks;
+  final List<TaskList> tasks;
 
   TasksFetched({required this.tasks});
 }

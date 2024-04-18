@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/di/injection_container.dart';
 import 'package:to_do_app/domain/use-cases/tasks_cubit.dart';
+import 'package:to_do_app/presentation/Tasks/all/task_lists_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,10 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Placeholder(),
+        body: TaskListsScreen(),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+
+        },child: const Icon(Icons.add),),
       ),
     );
   }

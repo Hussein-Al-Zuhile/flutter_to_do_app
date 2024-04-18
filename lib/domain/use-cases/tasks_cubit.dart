@@ -5,6 +5,7 @@ import 'package:to_do_app/data/dataSources/local/database.dart' as dataTask;
 import 'package:to_do_app/data/repositories/tasks/tasks_repository.dart';
 import 'package:to_do_app/domain/entities/task_entity.dart';
 import 'package:to_do_app/domain/models/task.dart';
+import 'package:to_do_app/domain/models/task_list.dart';
 
 part 'tasks_state.dart';
 
@@ -14,8 +15,8 @@ class TasksCubit extends Cubit<TasksState> {
 
   TasksCubit(this._tasksRepository) : super(TasksInitial()) {
     emit(TasksLoading());
-    _tasksRepository.getAllTasks().listen((tasks) {
-      emit(TasksFetched(tasks: tasks.map((task) => task.toDomainTask()).toList()));
+    _tasksRepository.getAllTaskLists().listen((tasks) {
+      emit(TasksFetched(tasks: tasks));
     });
   }
 
@@ -33,5 +34,5 @@ class TasksCubit extends Cubit<TasksState> {
 }
 
 extension on dataTask.Task {
-  Task toDomainTask() => Task(id: id, content: content, isDone: isDone);
+  Task toDomainTask() => Task(id: id, content: content, isDone: isDone, taskListId: taskListId);
 }

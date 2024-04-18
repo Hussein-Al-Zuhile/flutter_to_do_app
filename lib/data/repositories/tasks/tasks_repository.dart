@@ -4,6 +4,7 @@ import 'package:to_do_app/data/dataSources/local/database.dart';
 import 'package:to_do_app/data/dataSources/local/local_data_source.dart';
 import 'package:to_do_app/domain/entities/task_entity.dart';
 import 'package:to_do_app/domain/models/task.dart' as domainTask;
+import 'package:to_do_app/domain/models/task_list.dart' as domainTaskList;
 
 @lazySingleton
 class TasksRepository {
@@ -16,17 +17,36 @@ class TasksRepository {
   }
 
   Future<void> updateTask(domainTask.Task task) async {
-    print(task.id);
-    await localDataSource.updateTask(TasksCompanion(
-        id: Value(task.id), content: Value(task.content), isDone: Value(task.isDone)));
+    await localDataSource.updateTask(TasksCompanion.insert(
+        id: Value(task.id),
+        content: task.content,
+        isDone: Value(task.isDone),
+        taskListId: task.taskListId));
   }
 
   Future<void> deleteTask(domainTask.Task task) async {
     await localDataSource.deleteTask(TasksCompanion.insert(
-        id: Value(task.id), content: task.content, isDone: Value(task.isDone)));
+        id: Value(task.id),
+        content: task.content,
+        isDone: Value(task.isDone),
+        taskListId: task.taskListId));
   }
 
   Stream<List<Task>> getAllTasks() {
     return localDataSource.getAllTasks();
+  }
+
+  Stream<List<domainTaskList.TaskList>> getAllTaskLists() {
+    return localDataSource.getAllTaskLists().map((taskLists) =>
+        taskLists.map((tuple) =>
+            domainTaskList.TaskList(
+                id: tuple.item1.id,
+                title: tuple.item1.title,
+                tasks: tuple.item2.map((e) =>
+                    domainTask.Task(
+                        id: e.id, content: e.content, isDone: e.isDone, taskListId: e.taskListId))
+                    .toList()
+            )).toList()
+    );
   }
 }

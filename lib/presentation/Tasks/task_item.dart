@@ -17,12 +17,18 @@ class TaskItem extends StatelessWidget {
             value: task.isDone,
             onChanged: (bool? value) {
               context.read<TasksCubit>().updateTask(Task(
-                  id: task.id, content: task.content, isDone: !task.isDone));
+                  id: task.id,
+                  content: task.content,
+                  isDone: !task.isDone,
+                  taskListId: task.taskListId));
             }),
         const SizedBox(
           width: 16,
         ),
-        Text(task.content),
+        Text(
+          task.content,
+          softWrap: true,
+        ),
         const Spacer(),
         IconButton(
             onPressed: () {
