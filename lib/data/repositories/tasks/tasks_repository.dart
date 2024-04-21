@@ -8,16 +8,17 @@ import 'package:to_do_app/domain/models/task_list.dart' as domainTaskList;
 
 @lazySingleton
 class TasksRepository {
-  LocalDataSource localDataSource;
+  LocalDataSource _localDataSource;
 
-  TasksRepository({required this.localDataSource});
+  TasksRepository({required LocalDataSource localDataSource})
+      : _localDataSource = localDataSource;
 
   Future<void> addTask(TaskEntity taskEntity) async {
-    await localDataSource.addTask(taskEntity);
+    await _localDataSource.addTask(taskEntity);
   }
 
   Future<void> updateTask(domainTask.Task task) async {
-    await localDataSource.updateTask(TasksCompanion.insert(
+    await _localDataSource.updateTask(TasksCompanion.insert(
         id: Value(task.id),
         content: task.content,
         isDone: Value(task.isDone),
@@ -25,7 +26,7 @@ class TasksRepository {
   }
 
   Future<void> deleteTask(domainTask.Task task) async {
-    await localDataSource.deleteTask(TasksCompanion.insert(
+    await _localDataSource.deleteTask(TasksCompanion.insert(
         id: Value(task.id),
         content: task.content,
         isDone: Value(task.isDone),
@@ -33,20 +34,24 @@ class TasksRepository {
   }
 
   Stream<List<Task>> getAllTasks() {
-    return localDataSource.getAllTasks();
+    return _localDataSource.getAllTasks();
   }
 
+  Future<int> addTaskList(String title) async =>
+      await _localDataSource.addTaskList(title);
+
   Stream<List<domainTaskList.TaskList>> getAllTaskLists() {
-    return localDataSource.getAllTaskLists().map((taskLists) =>
-        taskLists.map((tuple) =>
-            domainTaskList.TaskList(
-                id: tuple.item1.id,
-                title: tuple.item1.title,
-                tasks: tuple.item2.map((e) =>
-                    domainTask.Task(
-                        id: e.id, content: e.content, isDone: e.isDone, taskListId: e.taskListId))
-                    .toList()
-            )).toList()
-    );
+    return _localDataSource.getAllTaskLists().map((taskLists) => taskLists
+        .map((tuple) => domainTaskList.TaskList(
+            id: tuple.item1.id,
+            title: tuple.item1.title,
+            tasks: tuple.item2
+                .map((e) => domainTask.Task(
+                    id: e.id,
+                    content: e.content,
+                    isDone: e.isDone,
+                    taskListId: e.taskListId))
+                .toList()))
+        .toList());
   }
 }

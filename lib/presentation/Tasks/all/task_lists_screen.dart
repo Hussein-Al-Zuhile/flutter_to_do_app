@@ -9,25 +9,23 @@ import 'package:to_do_app/domain/use-cases/tasks_cubit.dart';
 import 'package:to_do_app/presentation/Tasks/task_item.dart';
 
 class TaskListsScreen extends StatelessWidget {
+
   const TaskListsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TasksCubit(serviceLocator()),
-      child: BlocBuilder<TasksCubit, TasksState>(
-        builder: (context, state) {
-          if (state is TasksFetched) {
-            return SingleChildScrollView(
-                child: StaggeredGrid.count(
-                    crossAxisCount: state.tasks.length,
-                    children:
-                        state.tasks.map((taskList) => TaskListItem(taskList: taskList)).toList()));
-          } else {
-            return const Placeholder();
-          }
-        },
-      ),
+    return BlocBuilder<TasksCubit, TasksState>(
+      builder: (context, state) {
+        if (state is TasksFetched && state.tasks.isNotEmpty) {
+          return SingleChildScrollView(
+              child: StaggeredGrid.count(
+                  crossAxisCount: state.tasks.length,
+                  children:
+                      state.tasks.map((taskList) => TaskListItem(taskList: taskList)).toList()));
+        } else {
+          return const Placeholder();
+        }
+      },
     );
   }
 }

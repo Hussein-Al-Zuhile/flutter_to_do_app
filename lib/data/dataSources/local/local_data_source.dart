@@ -10,10 +10,6 @@ class LocalDataSource {
 
   LocalDataSource({required AppDatabase database}) : _database = database;
 
-  Future<void> addTaskList(String title) async {
-    await _database.taskLists.insertOne(TaskListsCompanion.insert(title: title));
-  }
-
   Future<void> addTask(TaskEntity taskEntity) async {
     await _database.tasks.insertOne(TasksCompanion.insert(
         content: taskEntity.content,
@@ -22,7 +18,8 @@ class LocalDataSource {
   }
 
   Future<void> updateTask(TasksCompanion task) async {
-    await (_database.tasks.update()..whereSamePrimaryKey(task)).write(task);
+    await (_database.tasks.update()
+      ..whereSamePrimaryKey(task)).write(task);
   }
 
   Future<void> deleteTask(TasksCompanion task) async {
@@ -33,11 +30,15 @@ class LocalDataSource {
     return _database.tasks.select().watch();
   }
 
+  Future<int> addTaskList(String title) async {
+    return await _database.taskLists.insertOne(TaskListsCompanion.insert(title: title));
+  }
+
   Stream<List<Tuple2<TaskList, List<Task>>>> getAllTaskLists() {
     return _database.taskLists.select().watch().asyncExpand((taskLists) async* {
       yield await Future.wait(taskLists.map((taskList) async {
         final tasksOfTaskList = await (_database.tasks.select()
-              ..where((task) => task.taskListId.equals(taskList.id)))
+          ..where((task) => task.taskListId.equals(taskList.id)))
             .get();
         return Tuple2(taskList, tasksOfTaskList);
       }));

@@ -31,6 +31,11 @@ class TasksCubit extends Cubit<TasksState> {
   void deleteTask(Task task) async {
     await _tasksRepository.deleteTask(task);
   }
+
+  Future<int> addTaskList(String title) async {
+    final id = await _tasksRepository.addTaskList(title);
+    return id;
+  }
 }
 
 extension on dataTask.Task {
