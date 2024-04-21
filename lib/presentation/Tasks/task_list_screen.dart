@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/domain/entities/task_entity.dart';
@@ -10,11 +12,14 @@ import '../../domain/use-cases/tasks_cubit.dart';
 
 class TaskListScreen extends StatelessWidget {
   final TasksRepository tasksRepository = serviceLocator();
-  final TaskList taskList;
+  final TaskList initialTaskList;
 
-  TaskListScreen({super.key, required this.taskList});
+  final _taskTextController = TextEditingController();
+  final _titleTextController = TextEditingController();
 
-  final textController = TextEditingController();
+  TaskListScreen({super.key, required this.initialTaskList}) {
+    _titleTextController.text = initialTaskList.title;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,30 +27,47 @@ class TaskListScreen extends StatelessWidget {
       body: BlocBuilder<TasksCubit, TasksState>(
         builder: (context, state) {
           if ((state is TasksFetched)) {
+            final taskList =
+                state.taskLists.firstWhere((element) => element.id == initialTaskList.id);
+            Timer? timer;
             return Column(
               children: [
-                const Padding(padding: EdgeInsets.only(top: 50)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: (text) async {
+                      timer?.cancel();
+                      timer = Timer(const Duration(milliseconds: 500), () {
+                        context.read<TasksCubit>().updateTaskList(initialTaskList.id, text);
+                      });
+                    },
+                    controller: _titleTextController,
+                    decoration: const InputDecoration(hintText: 'Title..'),
+                    autofocus: true,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     onSubmitted: (text) {
-                      context
-                          .read<TasksCubit>()
-                          .addTask(TaskEntity(content: text, isDone: false, taskListId: taskList.id));
-                      textController.clear();
+                      context.read<TasksCubit>().addTask(
+                          TaskEntity(content: text, isDone: false, taskListId: initialTaskList.id));
+                      _taskTextController.clear();
                     },
-                    controller: textController,
-                    decoration: const InputDecoration(filled: true),
+                    controller: _taskTextController,
+                    decoration: const InputDecoration(filled: true, hintText: 'Add new task..'),
                   ),
                 ),
                 Flexible(
-                  child: ListView.builder(
-                      itemCount: state.tasks.length,
-                      itemBuilder: (buildContext, int index) {
-                        // return TaskItem(
-                        //   task: state.tasks[index],
-                        // );
-                      }),
+                  child: ListView.separated(
+                    itemCount: taskList.tasks.length,
+                    itemBuilder: (buildContext, int index) {
+                      return TaskItem(
+                        task: taskList.tasks[index],
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
+                  ),
                 ),
               ],
             );

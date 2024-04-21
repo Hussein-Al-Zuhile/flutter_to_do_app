@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:to_do_app/data/dataSources/local/database.dart';
 import 'package:to_do_app/domain/entities/task_entity.dart';
 import 'package:tuple/tuple.dart';
@@ -18,8 +19,7 @@ class LocalDataSource {
   }
 
   Future<void> updateTask(TasksCompanion task) async {
-    await (_database.tasks.update()
-      ..whereSamePrimaryKey(task)).write(task);
+    await (_database.tasks.update()..whereSamePrimaryKey(task)).write(task);
   }
 
   Future<void> deleteTask(TasksCompanion task) async {
@@ -34,14 +34,18 @@ class LocalDataSource {
     return await _database.taskLists.insertOne(TaskListsCompanion.insert(title: title));
   }
 
+  Future<void> updateTaskList(int id, String title) async {
+    await (_database.taskLists.update()..where((tbl) => tbl.id.equals(id)))
+        .write(TaskListsCompanion.insert(id: Value(id), title: title));
+  }
+
   Stream<List<Tuple2<TaskList, List<Task>>>> getAllTaskLists() {
-    return _database.taskLists.select().watch().asyncExpand((taskLists) async* {
-      yield await Future.wait(taskLists.map((taskList) async {
-        final tasksOfTaskList = await (_database.tasks.select()
-          ..where((task) => task.taskListId.equals(taskList.id)))
-            .get();
+    return Rx.combineLatest2(_database.taskLists.select().watch(), _database.tasks.select().watch(),
+        (taskLists, tasks) {
+      return taskLists.map((taskList) {
+        final tasksOfTaskList = tasks.where((task) => task.taskListId == taskList.id).toList();
         return Tuple2(taskList, tasksOfTaskList);
-      }));
+      }).toList();
     });
   }
 }

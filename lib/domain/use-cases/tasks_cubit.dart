@@ -16,7 +16,7 @@ class TasksCubit extends Cubit<TasksState> {
   TasksCubit(this._tasksRepository) : super(TasksInitial()) {
     emit(TasksLoading());
     _tasksRepository.getAllTaskLists().listen((tasks) {
-      emit(TasksFetched(tasks: tasks));
+      emit(TasksFetched(taskLists: tasks));
     });
   }
 
@@ -33,8 +33,11 @@ class TasksCubit extends Cubit<TasksState> {
   }
 
   Future<int> addTaskList(String title) async {
-    final id = await _tasksRepository.addTaskList(title);
-    return id;
+    return await _tasksRepository.addTaskList(title);
+  }
+
+  void updateTaskList(int id, String title) async {
+    await _tasksRepository.updateTaskList(id, title);
   }
 }
 

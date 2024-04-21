@@ -10,8 +10,7 @@ import 'package:to_do_app/domain/models/task_list.dart' as domainTaskList;
 class TasksRepository {
   LocalDataSource _localDataSource;
 
-  TasksRepository({required LocalDataSource localDataSource})
-      : _localDataSource = localDataSource;
+  TasksRepository({required LocalDataSource localDataSource}) : _localDataSource = localDataSource;
 
   Future<void> addTask(TaskEntity taskEntity) async {
     await _localDataSource.addTask(taskEntity);
@@ -37,8 +36,10 @@ class TasksRepository {
     return _localDataSource.getAllTasks();
   }
 
-  Future<int> addTaskList(String title) async =>
-      await _localDataSource.addTaskList(title);
+  Future<int> addTaskList(String title) async => await _localDataSource.addTaskList(title);
+
+  Future<void> updateTaskList(int id, String title) async =>
+      await _localDataSource.updateTaskList(id, title);
 
   Stream<List<domainTaskList.TaskList>> getAllTaskLists() {
     return _localDataSource.getAllTaskLists().map((taskLists) => taskLists
@@ -47,10 +48,7 @@ class TasksRepository {
             title: tuple.item1.title,
             tasks: tuple.item2
                 .map((e) => domainTask.Task(
-                    id: e.id,
-                    content: e.content,
-                    isDone: e.isDone,
-                    taskListId: e.taskListId))
+                    id: e.id, content: e.content, isDone: e.isDone, taskListId: e.taskListId))
                 .toList()))
         .toList());
   }

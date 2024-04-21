@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/di/injection_container.dart';
@@ -10,9 +11,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   configureDependencies();
-  runApp(BlocProvider(
-    create: (context) => TasksCubit(serviceLocator()),
-    child: MainApp(),
+  runApp(SafeArea(
+    child: BlocProvider(
+      create: (context) => TasksCubit(serviceLocator()),
+      child: const MainApp(),
+    ),
   ));
 }
 
@@ -22,28 +25,26 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Builder(
-          builder: (context) {
-            return BlocProvider(
-              create: (context) => TasksCubit(serviceLocator()),
-              child: Scaffold(
-                body: const TaskListsScreen(),
-                floatingActionButton: Builder(
-                  builder: (context) {
-                    return FloatingActionButton(
-                      onPressed: () async {
-                        final newTaskListId = await context.read<TasksCubit>().addTaskList("title1");
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => TaskListScreen(taskList: TaskList(id: newTaskListId, title: "title1", tasks: []))));
-                      },
-                      child: const Icon(Icons.add),
-                    );
-                  }
-                ),
-              ),
-            );
-          }
-      ),
+      home: Builder(builder: (context) {
+        return BlocProvider(
+          create: (context) => TasksCubit(serviceLocator()),
+          child: Scaffold(
+            body: const SafeArea(child: TaskListsScreen()),
+            floatingActionButton: Builder(builder: (context) {
+              return FloatingActionButton(
+                onPressed: () async {
+                  final newTaskListId = await context.read<TasksCubit>().addTaskList("");
+                  Future.delayed(const Duration(milliseconds: 500));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => TaskListScreen(
+                          initialTaskList: TaskList(id: newTaskListId, title: '', tasks: []))));
+                },
+                child: const Icon(Icons.add),
+              );
+            }),
+          ),
+        );
+      }),
     );
   }
 }
