@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:path/path.dart';
 import 'package:to_do_app/di/injection_container.dart';
-import 'package:to_do_app/domain/models/task.dart';
 import 'package:to_do_app/domain/models/task_list.dart';
-import 'package:to_do_app/domain/use-cases/tasks_cubit.dart';
-import 'package:to_do_app/presentation/Tasks/task_item.dart';
-import 'package:to_do_app/presentation/Tasks/task_list_screen.dart';
+import 'package:to_do_app/domain/use-cases/app/app_cubit.dart';
+import 'package:to_do_app/domain/use-cases/tasks/tasks_cubit.dart';
+import 'package:to_do_app/presentation/Tasks/details/task_item.dart';
+import 'package:to_do_app/presentation/Tasks/details/task_list_screen.dart';
 
 class TaskListsScreen extends StatelessWidget {
   const TaskListsScreen({super.key});
@@ -42,13 +42,16 @@ class TaskListItem extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Card(
         child: InkWell(
-          onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => TaskListScreen(initialTaskList: taskList)));
+          onTap: () async {
+            context.read<AppCubit>().emit(TaskListDetails());
+            await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => TaskListScreen(initialTaskList: taskList)));
+            await context.read<TasksCubit>().checkAndDeleteEmptyTaskLists();
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const Padding(padding: EdgeInsets.only(top: 10)),
               Title(color: Colors.black, child: Text(taskList.title)),
               const SizedBox(height: 8),
               Column(

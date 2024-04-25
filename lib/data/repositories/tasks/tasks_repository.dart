@@ -41,6 +41,8 @@ class TasksRepository {
   Future<void> updateTaskList(int id, String title) async =>
       await _localDataSource.updateTaskList(id, title);
 
+  Future<void> deleteTaskList(int id) async => await _localDataSource.deleteTaskList(id);
+
   Stream<List<domainTaskList.TaskList>> getAllTaskLists() {
     return _localDataSource.getAllTaskLists().map((taskLists) => taskLists
         .map((tuple) => domainTaskList.TaskList(

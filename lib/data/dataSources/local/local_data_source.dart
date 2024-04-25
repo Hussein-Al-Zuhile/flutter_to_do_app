@@ -39,6 +39,10 @@ class LocalDataSource {
         .write(TaskListsCompanion.insert(id: Value(id), title: title));
   }
 
+  Future<void> deleteTaskList(int id) async {
+    await (_database.taskLists.deleteWhere((tbl) => tbl.id.equals(id)));
+  }
+
   Stream<List<Tuple2<TaskList, List<Task>>>> getAllTaskLists() {
     return Rx.combineLatest2(_database.taskLists.select().watch(), _database.tasks.select().watch(),
         (taskLists, tasks) {

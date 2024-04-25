@@ -9,7 +9,7 @@ import 'package:to_do_app/domain/models/task_list.dart';
 
 part 'tasks_state.dart';
 
-@injectable
+@singleton
 class TasksCubit extends Cubit<TasksState> {
   final TasksRepository _tasksRepository;
 
@@ -38,6 +38,21 @@ class TasksCubit extends Cubit<TasksState> {
 
   void updateTaskList(int id, String title) async {
     await _tasksRepository.updateTaskList(id, title);
+  }
+
+  void deleteTaskList(int id) async {
+    await _tasksRepository.deleteTaskList(id);
+  }
+
+  Future<void> checkAndDeleteEmptyTaskLists() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    _tasksRepository.getAllTaskLists().first.then((taskLists) {
+      for (final taskList in taskLists) {
+        if (taskList.title.isEmpty && taskList.tasks.isEmpty) {
+          deleteTaskList(taskList.id);
+        }
+      }
+    });
   }
 }
 

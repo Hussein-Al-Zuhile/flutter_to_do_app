@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/domain/models/task.dart';
-import 'package:to_do_app/domain/use-cases/tasks_cubit.dart';
+import 'package:to_do_app/domain/use-cases/tasks/tasks_cubit.dart';
 
 class TaskItem extends StatelessWidget {
   final Task task;
