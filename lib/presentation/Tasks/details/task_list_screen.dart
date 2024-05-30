@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
 import 'package:to_do_app/data/repositories/tasks/tasks_repository.dart';
 import 'package:to_do_app/di/injection_container.dart';
 import 'package:to_do_app/domain/entities/task_entity.dart';
 import 'package:to_do_app/domain/models/task_list.dart';
-import 'package:to_do_app/domain/use-cases/app/app_cubit.dart';
 import 'package:to_do_app/domain/use-cases/tasks/tasks_cubit.dart';
 import 'package:to_do_app/presentation/Tasks/details/task_item.dart';
 

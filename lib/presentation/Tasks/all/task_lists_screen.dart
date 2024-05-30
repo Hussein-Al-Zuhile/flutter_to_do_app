@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:path/path.dart';
-import 'package:to_do_app/di/injection_container.dart';
 import 'package:to_do_app/domain/models/task_list.dart';
 import 'package:to_do_app/domain/use-cases/app/app_cubit.dart';
 import 'package:to_do_app/domain/use-cases/tasks/tasks_cubit.dart';

@@ -8,7 +8,7 @@ import 'package:to_do_app/domain/models/task_list.dart' as domainTaskList;
 
 @lazySingleton
 class TasksRepository {
-  LocalDataSource _localDataSource;
+  final LocalDataSource _localDataSource;
 
   TasksRepository({required LocalDataSource localDataSource}) : _localDataSource = localDataSource;
 
